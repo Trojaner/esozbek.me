@@ -13,6 +13,8 @@ const PreviewCompatibleImage = (props: PreviewCompatibleImageProps) => {
 
   const { alt = "", childImageSharp } = props;
   const image: any = props.image;
+
+  console.log(image);
    
   if (image?.childImageSharp || childImageSharp) {
     return (

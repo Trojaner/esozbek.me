@@ -1,14 +1,30 @@
 @import "~bulma/sass/utilities/initial-variables"
 
 // Config vars
-// blog logo brand color: #FD461E
-$blog-red: #6f00ff
-$blog-red-invert: #fff
+$primary: #303f9f
+$primary-light: #666ad1
+$primary-dark: #001970
+$primary-invert: #fff
 
-$primary: $blog-red
-$primary-invert: $blog-red-invert
+$secondary: #7b1fa2
+$secondary-light: #ae52d4
+$secondary-dark: #4a0072
+$secondary-invert: #fff
+
 $body-color: #333
 $black: #2b2523
+
+html, body
+  height: 100%
+  width: 100%
+
+.site-content
+  display: flex
+  min-height: 100vh
+  flex-direction: column
+
+.main
+  flex: 1
 
 .navbar .navbar-menu
   box-shadow: none !important
@@ -43,30 +59,13 @@ $black: #2b2523
   align-items: center
 
 .full-width-image
-    width: 100vw
-    height: 400px
-    background-size: cover
-    background-position: bottom
-    display: flex
-    justify-content: center
-    align-items: center
-
-.btn
-    display: inline-block
-    padding: 12px 16px 10px
-    font-size: 18px
-    font-size: 1rem
-    line-height: 1.25
-    background-color: #fff
-    border-radius: .25rem
-    text-decoration: none
-    font-weight: 700
-    color: #CC3700
-    text-align: center
-    -webkit-box-shadow: inset 0 0 0 2px #CC3700
-    box-shadow: inset 0 0 0 2px #f40
-    -webkit-transition: all .15s ease
-    transition: all .15s ease
+  width: 100vw
+  height: 400px
+  background-size: cover
+  background-position: bottom
+  display: flex
+  justify-content: center
+  align-items: center
 
 .margin-top-0
   margin-top: 0 !important
@@ -88,11 +87,10 @@ footer.footer
 $menu-item-color: $white-ter
 $menu-item-hover-color: $black !important
 $menu-item-hover-background-color: $black
-$menu-item-active-color: $blog-red-invert
-$menu-item-active-background-color:	$blog-red-invert
-$menu-list-border-left: 1px solid $blog-red-invert
+$menu-item-active-color: $primary-invert
+$menu-item-active-background-color: 	$primary-invert
+$menu-list-border-left: 1px solid $primary-invert
 $menu-label-color: $white-ter
-
 
 .menu-label
   font-size: 1em !important
@@ -103,14 +101,14 @@ $menu-label-color: $white-ter
 .social
   padding: 2em
 .social a
-    padding: .5em .5em .3em .5em
-    border-radius: 1em
-    background-color: $white-ter
-    margin: .5em
-    width: 1em
-    height: 1em
-    vertical-align: middle
-    display: inline
+  padding: .5em .5em .3em .5em
+  border-radius: 1em
+  background-color: $white-ter
+  margin: .5em
+  width: 2em
+  height: 2em
+  vertical-align: middle
+  display: inline
 
 // blog roll
 .blog-list-item.is-featured
@@ -122,9 +120,7 @@ $menu-label-color: $white-ter
   flex-basis: 35%
   margin: 0 1.5em 0 0
 
-
 @import "~bulma"
-
 
 // responsiveness
 +tablet-only

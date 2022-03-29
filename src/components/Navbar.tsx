@@ -5,7 +5,7 @@ import github from "../images/social/github.svg";
 export default function Navbar() {
   var [navBarActiveClass, setNavBarActiveClass] = useState<string>("");
   const toggleHamburger = () => {
-    setNavBarActiveClass(prev => prev ? "is-active" : "");
+    setNavBarActiveClass(prev => prev == "" ? "is-active" : "");
   }
 
   return (

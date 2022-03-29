@@ -4,6 +4,7 @@ import { Link } from "gatsby";
 import github from "../images/social/github.svg";
 import instagram from "../images/social/instagram.svg";
 import twitter from "../images/social/twitter.svg";
+import linkedin from "../images/social/linkedin.svg";
 
 export default function Footer() {
     return (
@@ -32,7 +33,7 @@ export default function Footer() {
                                 <ul className="menu-list">
                                     <li>
                                         <Link className="navbar-item" to="/blog">
-                                            Latest Blog Posts
+                                            Blog
                                         </Link>
                                     </li>
                                     <li>
@@ -63,6 +64,13 @@ export default function Footer() {
                                 <img
                                     src={instagram}
                                     alt="Instagram"
+                                    style={{ width: "1em", height: "1em" }}
+                                />
+                            </a>
+                            <a title="LinkedIn" href="https://linkedin.com/esozbek">
+                                <img
+                                    src={linkedin}
+                                    alt="LinkedIn"
                                     style={{ width: "1em", height: "1em" }}
                                 />
                             </a>

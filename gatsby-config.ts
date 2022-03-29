@@ -6,6 +6,7 @@ const config: GatsbyConfig = {
     siteUrl: `https://esozbek.me`
   },
   plugins: [
+    "gatsby-plugin-image",
     "gatsby-plugin-sharp",
     "gatsby-transformer-sharp",
     {
@@ -92,6 +93,12 @@ const config: GatsbyConfig = {
         ],
       },
     },
+    {
+      resolve: `gatsby-plugin-disqus`,
+      options: {
+        shortname: `esozbek`
+      }
+    }
   ]
 };
 

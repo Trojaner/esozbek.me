@@ -4,14 +4,17 @@ import { Helmet } from "react-helmet";
 import { graphql, Link } from "gatsby";
 import Layout from "../components/Layout";
 import { HTMLContent, TextContent } from "../components/Content";
+import { Disqus } from 'gatsby-plugin-disqus';
 
 interface BlogPostTemplateProps {
+  id: string;
   content: string;
   contentComponent?: React.ComponentType<any>;
   description?: string;
   title?: string;
   helmet?: any;
   tags?: string[];
+  slug: string;
 }
 export const BlogPostTemplate = (props: BlogPostTemplateProps) => {
   const PostContent = props.contentComponent || TextContent;
@@ -39,6 +42,13 @@ export const BlogPostTemplate = (props: BlogPostTemplateProps) => {
                 </ul>
               </div>
             ) : null}
+            <Disqus
+              config={{
+                url: `https://esozbek.me${props.slug}`,
+                identifier: props.id,
+                title: props.title
+              }}
+            />
           </div>
         </div>
       </div>
@@ -46,12 +56,13 @@ export const BlogPostTemplate = (props: BlogPostTemplateProps) => {
   );
 };
 
-export default function BlogPost ({ data }) {
+export default function BlogPost({ data }) {
   const post = data.markdownRemark;
 
   return (
     <Layout>
       <BlogPostTemplate
+        id={post.id}
         content={post.html}
         contentComponent={HTMLContent}
         description={post.frontmatter.description}
@@ -62,9 +73,10 @@ export default function BlogPost ({ data }) {
               name="description"
               content={`${post.frontmatter.description}`}
             />
-            <meta name="author" content="Enes Sadık Özbek"/>
+            <meta name="author" content="Enes Sadık Özbek" />
           </Helmet>
         }
+        slug={post.fields.slug}
         tags={post.frontmatter.tags}
         title={post.frontmatter.title}
       />
@@ -77,6 +89,9 @@ export const pageQuery = graphql`
     markdownRemark(id: { eq: $id }) {
       id
       html
+      fields {
+        slug
+      }
       frontmatter {
         date(formatString: "MMMM DD, YYYY")
         title
