@@ -1,14 +1,16 @@
 import React from "react";
 import Layout from "../../components/Layout";
+import { Helmet } from "react-helmet";
 
-// eslint-disable-next-line
 export default () => (
   <Layout>
     <section className="section">
+      <Helmet>
+        <title>Contact - Enes Sadık Özbek</title>
+      </Helmet>
       <div className="container">
         <div className="content">
-          <h1>Thank you!</h1>
-          <p>This is a custom thank you page for form submissions</p>
+          <h1>Thank you for contacting me!</h1>
         </div>
       </div>
     </section>

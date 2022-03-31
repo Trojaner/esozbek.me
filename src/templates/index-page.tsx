@@ -1,7 +1,6 @@
 import React from "react";
 import { Link, graphql } from "gatsby";
 import { getImage, ImageDataLike } from "gatsby-plugin-image";
-
 import Layout from "../components/Layout";
 import Features, { FeatureGridItem } from "../components/Features";
 import BlogRoll from "../components/BlogRoll";
@@ -26,7 +25,7 @@ export function IndexPageTemplate(props: IndexPageTemplateProps) {
   return (
     <div>
       <FullWidthImage image={heroImage} title={props.title || ""} subheading={props.subheading || ""} />
-      <section className="section section--gradient">
+      <section className="section section--gradient section-index">
         <div className="container">
           <div className="section">
             <div className="columns">
@@ -74,7 +73,7 @@ export function IndexPageTemplate(props: IndexPageTemplateProps) {
 };
 
 export default function IndexPage({ data }) {
-  const { frontmatter } = data.markdownRemark;
+  const { frontmatter } = data.mdx;
 
   return (
     <Layout>
@@ -93,7 +92,7 @@ export default function IndexPage({ data }) {
 
 export const pageQuery = graphql`
   query IndexPageTemplate {
-    markdownRemark(frontmatter: { templateKey: { eq: "index-page" } }) {
+    mdx(frontmatter: { templateKey: { eq: "index-page" } }) {
       frontmatter {
         title,
         heading

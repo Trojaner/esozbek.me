@@ -4,10 +4,10 @@ title: Zero Trust Microservice Architecture with ABP Framework
 date: 2022-03-16T00:00:00.000Z
 description: "In this article we will explore how to integrate a zero trust microservice architecture with ABP Framework. "
 featuredPost: false
-featuredImage: /images/posts/zero-trust-microservice-architecture-with-abp-framework.png
+featuredImage: ../../../static/uploads/zero-trust-microservice-architecture-with-abp-framework.png
 tags:
   - abp
-  - csharp
+  - cs
 ---
 # Zero Trust Microservice Architecture with ABP Framework
 
@@ -34,7 +34,7 @@ This service will host IdentityServer with the permission management and tenant 
 Create a new project using `abp new Sample.Identity -t app`. After that, remove all modules expect for permission management and tenant management.
 
 After that create the following app service and DTOs in application contracts:
-```c#
+```csharp
 namespace Sample.Identity;
 
 public interface IPermissionCheckerAppService : IApplicationService
@@ -45,7 +45,7 @@ public interface IPermissionCheckerAppService : IApplicationService
 }
 ```
 
-```c#
+```csharp
 namespace Sample.Identity;
 
 [Serializable]
@@ -56,7 +56,7 @@ public class CheckPermissionInput : EntityDto
     public string Name { get; set; }
 }
 ```
-```c#
+```csharp
 namespace Sample.Identity;
 
 [Serializable]
@@ -67,7 +67,7 @@ public class CheckPermissionsInput : EntityDto
     public ICollection<string> Names { get; set; }
 }
 ```
-```c#
+```csharp
 namespace Sample.Identity;
 
 [Serializable]
@@ -78,7 +78,7 @@ public class MultiplePermissionGrantResultDto
 ```
 
 and implement the service in the application layer to expose permission checking:
-```c#
+```csharp
 namespace Sample.Identity;
 
 [Authorize]
@@ -188,7 +188,7 @@ Create a new project using `abp new Sample.Auditing -t app`. After that, remove 
 Similar to the identity service, we need to expose an app service for creating audit logs.  
 
 Start by creating the following service and DTOs in the application contracts layer:
-```c#
+```csharp
 namespace Sample.Auditing;
 
 public interface IAuditLogAppService : IApplicationService
@@ -199,7 +199,7 @@ public interface IAuditLogAppService : IApplicationService
 }
 ```
 
-```c#
+```csharp
 namespace Sample.Auditing;
 
 [Serializable]
@@ -229,7 +229,7 @@ public class AuditLogInfoDto : EntityDto
 }
 ```
 
-```c#
+```csharp
 namespace Sample.Auditing;
 
 [Serializable]
@@ -243,7 +243,7 @@ public class AuditLogActionInfoDto
 }
 ```
 
-```c#
+```csharp
 namespace Sample.Auditing;
 
 [Serializable]
@@ -259,7 +259,7 @@ public class EntityChangeInfoDto
 }
 ```
 
-```c#
+```csharp
 namespace Sample.Auditing;
 
 [Serializable]
@@ -272,7 +272,7 @@ public class EntityPropertyChangeInfoDto
 }
 ```
 
-```c#
+```csharp
 namespace Sample.Auditing;
 
 [Serializable]
@@ -299,7 +299,7 @@ public class GetAuditLogsInput : PagedAndSortedResultRequestDto
 }
 ```
 and implement it in the application layer to expose auditing APIs: 
-```c#
+```csharp
 namespace Sample.Auditing;
 
 public class AuditLogAppService : ApplicationService, IAuditLogAppService
@@ -489,7 +489,7 @@ Create a new project called `Sample.Remoting` and add the following packages:
 * `Volo.Abp.ObjectMapping`
 
 After that create the following options for configuring the module:
-```c#
+```csharp
 namespace Sample.Remoting;
 
 public class RemotingOptions
@@ -504,7 +504,7 @@ public class RemotingOptions
 To implement authentication, we will create a `IRemotingTokenStore` service which will retrieve and cache the JWT token for the microservice. This service will also automatically renew the tokens before expiration.
 
 First create the configuration for configuring the client:
-```c#
+```csharp
 namespace Sample.Remoting;
 
 public class RemotingClientOptions
@@ -516,7 +516,7 @@ public class RemotingClientOptions
 ```
 
 After that create and implement the service for retrieving the auth token from IdentityServer:
-```c#
+```csharp
 namespace Sample.Remoting;
 
 public interface IRemotingTokenStore
@@ -525,7 +525,7 @@ public interface IRemotingTokenStore
 }
 ```
 
-```c#
+```csharp
 namespace Sample.Remoting;
 
 public class RemotingTokenStore : IRemotingTokenStore, ISingletonDependency
@@ -667,9 +667,9 @@ public class RemotingTokenStore : IRemotingTokenStore, ISingletonDependency
 }
 ```
 #### Integrating Authentication for Dynamic Http Clients
-Implement a  `IRemoteServiceHttpClientAuthenticator` so that [dynamic http clients](https://docs.abp.io/en/abp/4.4/API/Dynamic-CSharp-API-Clients) use the bearer token:
+Implement a  `IRemoteServiceHttpClientAuthenticator` so that [dynamic http clients](https://docs.abp.io/en/abp/4.4/API/Dynamic-cs-API-Clients) use the bearer token:
 
-```c#
+```csharp
 namespace Sample.Remoting;
 
 [Dependency(ReplaceServices = true)]
@@ -717,7 +717,7 @@ public class SampleServiceHttpClientAuthenticator : IRemoteServiceHttpClientAuth
 #### Audit Logging
 First add a reference to the auditing application contracts layer as we need to call the auditing API for storing audit logs. After that implement the following custom `IAuditingStore` which redirects all audit logs to the auditing service:
 
-```c#
+```csharp
 namespace Sample.Remoting;
 
 public class SampleAuditingStore : IAuditingStore
@@ -819,7 +819,7 @@ public class SampleAuditingStore : IAuditingStore
 
 #### Resolving tenants
 Implement the following `ITenantStore` to resolve tenants from IdentityServer:
-```c#
+```csharp
 namespace Sample.Remoting;
 
 public class SampleTenantStore : ITenantStore
@@ -868,7 +868,7 @@ public class SampleTenantStore : ITenantStore
 
 #### Checking Permissions
 Add a reference to the identity application contracts project. After that implement the following `IPermissionChecker` to redirect permission checks to IdentityServer: 
-```c#
+```csharp
 namespace Sample.Remoting;
 
 public class SamplePermissionChecker : IPermissionChecker
@@ -953,7 +953,7 @@ public class SamplePermissionChecker : IPermissionChecker
 #### Creating the Remoting ABP Module
 Finally create the remoting module and add 
 it to all microservices:
-```c#
+```csharp
 namespace Sample.Remoting;
 
 [DependsOn(
@@ -1029,7 +1029,7 @@ For each microservice add the following to the `appsettings.json`:
 ```
 
 For the identity microservice, disable remote permission checks in the host module:
-```c#
+```csharp
 public override void PreConfigureServices(ServiceConfigurationContext context)
 {
     PreConfigure<RemotingOptions>(o => o.UseRemotePermissionChecks = false);
@@ -1037,7 +1037,7 @@ public override void PreConfigureServices(ServiceConfigurationContext context)
 ```
 
 Similarly, disable remote auditing for the auditing microservice:
-```c#
+```csharp
 public override void PreConfigureServices(ServiceConfigurationContext context)
 {
     PreConfigure<RemotingOptions>(o => o.UseRemoteAuditing = false);

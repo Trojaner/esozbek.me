@@ -1,10 +1,10 @@
 import * as React from "react";
 import { Link } from "gatsby";
 
-import github from "../images/social/github.svg";
-import instagram from "../images/social/instagram.svg";
-import twitter from "../images/social/twitter.svg";
-import linkedin from "../images/social/linkedin.svg";
+import github from "../../static/assets/social/github.svg";
+import instagram from "../../static/assets/social/instagram.svg";
+import twitter from "../../static/assets/social/twitter.svg";
+import linkedin from "../../static/assets/social/linkedin.svg";
 
 export default function Footer() {
     return (
@@ -49,7 +49,7 @@ export default function Footer() {
                                 <img
                                     src={github}
                                     alt="GitHub"
-                                    style={{ width: "1em", height: "1em" }}
+                                    style={{ width: "2.5em", height: "2.5em" }}
                                 />
                             </a>
                             <a title="Twitter" href="https://twitter.com/Trojaner_">
@@ -57,21 +57,21 @@ export default function Footer() {
                                     className="fas fa-lg"
                                     src={twitter}
                                     alt="Twitter"
-                                    style={{ width: "1em", height: "1em" }}
+                                    style={{ width: "2.5em", height: "2.5em" }}
                                 />
                             </a>
                             <a title="Instagram" href="https://instagram.com/es_ozbek">
                                 <img
                                     src={instagram}
                                     alt="Instagram"
-                                    style={{ width: "1em", height: "1em" }}
+                                    style={{ width: "2.5em", height: "2.5em" }}
                                 />
                             </a>
                             <a title="LinkedIn" href="https://linkedin.com/esozbek">
                                 <img
                                     src={linkedin}
                                     alt="LinkedIn"
-                                    style={{ width: "1em", height: "1em" }}
+                                    style={{ width: "2.5em", height: "2.5em" }}
                                 />
                             </a>
                         </div>

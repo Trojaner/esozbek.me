@@ -4,10 +4,10 @@ title: Creating a Discord Bot with .NET and the ABP Framework
 date: 2022-03-14T00:00:00.000Z
 description: "In this article we will explore how to integrate Discord .NET with ABP."
 featuredPost: false
-featuredImage: /images/posts/creating-a-discord-bot-with-.net-and-the-abp-framework.png
+featuredImage: ../../../static/uploads/creating-a-discord-bot-with-.net-and-the-abp-framework.png
 tags:
   - abp
-  - csharp
+  - cs
   - discord
 ---
 # What is Discord?
@@ -15,7 +15,7 @@ tags:
 
 Note: this article expects that you already have a running ABP website and that the bot will complement it.  
 
- ABP has also just created [it's own Discord server](https://discord.gg/CrYrd5vcGh) too. Don't forget to join it!
+ABP has also just created [it's own Discord server](https://discord.gg/CrYrd5vcGh) too. Don't forget to join it!
 
 ## Discord Integration Libraries for .NET
 There are two popular unofficial Discord integration libraries for .NET: [DSharpPlus](https://github.com/DSharpPlus/DSharpPlus) and [Discord.NET](https://github.com/discord-net/Discord.Net). We will use Discord .NET as it is modular and supports [.NET Generic Host](https://docs.microsoft.com/en-us/dotnet/core/extensions/generic-host) integration via a [third party package](https://github.com/Hawxy/Discord.Addons.Hosting).
@@ -27,8 +27,7 @@ Create a new .NET console project and name it Sample.DiscordBot.Host. After that
 
 ## Setting up .NET Generic Host for Discord
 Replace the Main method with the following code:
-```c#
-    
+```csharp
 namespace Sample.DiscordBot
 {
     public class Program
@@ -98,7 +97,7 @@ namespace Sample.DiscordBot
 ## Integrating ABP
 ### Initializing ABP
 To initialze ABP, install the `Volo.Abp.Core` and `Volo.Abp.Autofac` packages from NuGet and call the ABP initialization service:
-```c#
+```csharp
 ...
 using (host)
 {
@@ -113,7 +112,7 @@ using (host)
 
 ### Adding the Host module
 Create a new class called `DiscordBotHostModule`:
-```c#
+```csharp
 namespace Sample.DiscordBot
 {
     [DependsOn(typeof(AbpAutofacModule))]
@@ -129,7 +128,7 @@ namespace Sample.DiscordBot
 ```
 
 Register the module in the host builder and add Autofac:
-```c#
+```csharp
 return Host
     ...
     .ConfigureServices((_, services) =>
@@ -144,7 +143,7 @@ return Host
 Create a new project, name it `Sample.DiscordBot.Application` and install `Discord.NET`, `Microsoft.AspNetCore.Identity` and `Volo.Abp.Ddd.Application`. 
 
 Create and implement the following interface:
-```c#
+```csharp
 namespace Sample.DiscordBot.Authentication
 {
     public interface IDiscordUserResolver
@@ -159,7 +158,7 @@ namespace Sample.DiscordBot.Authentication
 How you resolve users is up to you. For example, you could add a command like "!link" and redirect to your website with a token. Another alternative would be linking the discord account via the website with OpenID Connect. After that you could resolve the user with an API call to your identity backend. 
 
 Create and register a principal accessor and register it in the application module. The principal accessor will allow services and commands to resolve the current ABP user.
-```c#
+```csharp
 namespace Sample.DiscordBot.Authentication
 {
     [Dependency(ReplaceServices = true)]
@@ -183,7 +182,7 @@ namespace Sample.DiscordBot.Authentication
  Create another new project, name it Sample.DiscordBot.Application.Contracts and install the `Volo.Abp.Ddd.Domain` and `Volo.Abp.Authorization.Abstractions` packages.
  
  After that [create and register your permissions](https://docs.abp.io/en/abp/4.4/Authorization#permission-system):
- ```c#
+ ```csharp
 namespace Sample.DiscordBot.Permissions
 {
     public class DiscordBotPermissions
@@ -199,7 +198,7 @@ namespace Sample.DiscordBot.Permissions
 }
 ```
 
-```c#
+```csharp
 namespace Sample.DiscordBot.Permissions
 {
     public class DiscordBotPermissionDefinitionProvider : PermissionDefinitionProvider
@@ -219,7 +218,7 @@ namespace Sample.DiscordBot.Permissions
 ```
 
 Create the application contracts ABP module and register the permission definitions:
-```c#
+```csharp
 namespace Sample.DiscordBot
 {
     [DependsOn(
@@ -242,7 +241,7 @@ Add the application contracts module as dependency to the host module.
 
 ### Handling Discord commands
 Similar to the principal accessor, create a command context accessor in the application layer so we can access the current command context from commands and services:
-```c#
+```csharp
 namespace Sample.DiscordBot.Commands
 {
     public interface IDiscordCommandContextAccessor
@@ -253,7 +252,7 @@ namespace Sample.DiscordBot.Commands
 }
 ```
 
-```c#
+```csharp
 namespace Sample.DiscordBot.Commands
 {
     public class DiscordCommandContextAccessor : IDiscordCommandContextAccessor, IScopedDependency
@@ -272,7 +271,7 @@ Now we can implement the command handler. The command handler will
 
 The command handler is the heart of the discord bot ABP integration. Add the following to the host module:
 
-```c#
+```csharp
 namespace Sample.DiscordBot.Commands
 {
     public class DiscordCommandHandler : ISingletonDependency, IDisposable
@@ -411,7 +410,7 @@ namespace Sample.DiscordBot.Commands
 ```
 
 Update the host module to listen to Discord .NET events on application initialization:
-```c#
+```csharp
 public override void OnApplicationInitialization(ApplicationInitializationContext context)
 {
     var commandHandler = context.ServiceProvider.GetRequiredService<DiscordCommandHandler>();
@@ -421,7 +420,7 @@ public override void OnApplicationInitialization(ApplicationInitializationContex
 
 ### Linking ABP Permissions
 Create a new attribute called RequireAuthorization:
-```c#
+```csharp
 namespace Sample.DiscordBot.Authorization
 {
     public class RequireAuthorizationAttribute : PreconditionAttribute
@@ -465,7 +464,7 @@ namespace Sample.DiscordBot.Authorization
 
 ### Adding Commands
 Create the application module:
-```c#
+```csharp
 namespace Sample.DiscordBot
 {
     [DependsOn(
@@ -480,7 +479,7 @@ namespace Sample.DiscordBot
 ```
 
 Now you can add Discord .NET command modules:
-```c#
+```csharp
 public class PublicModule : ModuleBase<SocketCommandContext>
 {
     private readonly ICurrentUser _currentUser;
@@ -519,7 +518,7 @@ Create a Discord bot token as explained in [this article](https://www.writebots.
 ```
 
 Add the following to the host builder to read the token from the config:
-```c#
+```csharp
 return Host
     ...
     .ConfigureDiscordHost((context, configurationBuilder) =>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "gatsby";
-import github from "../images/social/github.svg";
+import github from "../../static/assets/social/github.svg";
 
 export default function Navbar() {
   var [navBarActiveClass, setNavBarActiveClass] = useState<string>("");
@@ -15,19 +15,24 @@ export default function Navbar() {
       aria-label="main-navigation"
     >
       <div className="container">
-        <div className="navbar-brand">
-          {/* Hamburger menu */}
-          <div
-            className={`navbar-burger burger ${navBarActiveClass}`}
-            data-target="navMenu"
-            role="menuitem"
-            tabIndex={0}
-            onKeyPress={() => toggleHamburger()}
-            onClick={() => toggleHamburger()}
-          >
-            <span />
-            <span />
-            <span />
+        <div className="is-flex is-align-items-center is-justify-content-space-between">
+          <Link className="navbar-item" to="/">
+            <b>Enes</b>&nbsp;Sadık&nbsp;<b>Özbek</b>
+          </Link>
+          <div className="navbar-brand">
+            {/* Hamburger menu */}
+            <div
+              className={`navbar-burger burger ${navBarActiveClass}`}
+              data-target="navMenu"
+              role="menuitem"
+              tabIndex={0}
+              onKeyPress={() => toggleHamburger()}
+              onClick={() => toggleHamburger()}
+            >
+              <span />
+              <span />
+              <span />
+            </div>
           </div>
         </div>
         <div
@@ -35,9 +40,6 @@ export default function Navbar() {
           className={`navbar-menu ${navBarActiveClass}`}
         >
           <div className="navbar-start has-text-centered">
-            <Link className="navbar-item" to="/">
-              <b>Enes</b>&nbsp;Sadık&nbsp;<b>Özbek</b>
-            </Link>
             <Link className="navbar-item" to="/blog">
               Blog
             </Link>

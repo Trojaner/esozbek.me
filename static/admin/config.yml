@@ -9,13 +9,13 @@ backend:
     deleteMedia: "[skip ci] Delete “{{path}}”"
 
 local_backend: true
-media_folder: static/images
-public_folder: /images
+media_folder: static/uploads
+public_folder: /uploads
 
 collections:
   - name: "blog"
     label: "Blog"
-    folder: "src/pages/blog"
+    folder: "src/content/blog"
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
@@ -36,7 +36,7 @@ collections:
   - name: "pages"
     label: "Pages"
     files:
-      - file: "src/pages/index.md"
+      - file: "src/content/index.mdx"
         label: "Landing Page"
         name: "index"
         fields:
@@ -121,7 +121,7 @@ collections:
                   },
                 ],
             }
-      - file: "src/pages/portfolio/index.md"
+      - file: "src/content/portfolio/index.mdx"
         label: "Portfolio"
         name: "portfolio"
         fields:

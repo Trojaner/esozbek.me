@@ -1,6 +1,7 @@
 import * as React from "react";
 import { navigate } from "gatsby-link";
 import Layout from "../../components/Layout";
+import { Helmet } from "react-helmet";
 
 function encode(data) {
   return Object.keys(data)
@@ -37,6 +38,9 @@ export default class Index extends React.Component {
     return (
       <Layout>
         <section className="section">
+          <Helmet>
+            <title>Contact - Enes Sadık Özbek</title>
+          </Helmet>
           <div className="container">
             <div className="content notification">
               <h1>Contact</h1>
@@ -106,7 +110,7 @@ export default class Index extends React.Component {
                   </button>
                 </div>
               </form>
-              <br/>
+              <br />
               <div>You can also contact me by sending an email to <b>es.ozbek@outlook.com</b>.</div>
             </div>
           </div>
