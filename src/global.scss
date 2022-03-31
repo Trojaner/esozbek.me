@@ -147,7 +147,7 @@ $menu-label-color: $white-ter;
  */
 
 .gatsby-highlight {
-  background-color: #fdf6e3;
+  background-color: #1e1e1e;
   border-radius: 0.3em;
   margin: 0.5em 0;
   padding: 1em;
@@ -177,4 +177,19 @@ $menu-label-color: $white-ter;
 
 .command-line-prompt > span[data-prompt]:before {
   content: attr(data-prompt);
+}
+
+.number {
+  align-items: revert;
+  background-color: revert; 
+  border-radius: revert; 
+  display: revert; 
+  font-size: revert; 
+  height: revert; 
+  justify-content: revert; 
+  margin-right: revert; 
+  min-width: revert; 
+  padding: revert; 
+  text-align: revert; 
+  vertical-align: revert; 
 }

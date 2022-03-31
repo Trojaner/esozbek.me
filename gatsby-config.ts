@@ -22,7 +22,7 @@ const config: GatsbyConfig = {
       resolve: `gatsby-plugin-mdx`,
       options: {
         extensions: [`.mdx`, `.md`],
-        plugins: [
+        gatsbyRemarkPlugins: [
           {
             resolve: "gatsby-remark-images",
             options: {
@@ -36,7 +36,8 @@ const config: GatsbyConfig = {
           {
             resolve: "gatsby-remark-prismjs",
             options: {
-              showLineNumbers: true
+              showLineNumbers: true,
+              noInlineHighlight: true
             }
           },
           `gatsby-remark-smartypants`
