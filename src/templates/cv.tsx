@@ -11,7 +11,7 @@ import TimelineDot from '@mui/lab/TimelineDot';
 import PositionCard from "../components/cv/PositionCard";
 import { Helmet } from "react-helmet";
 import EducationCard from "../components/cv/EducationCard";
-import { Rating } from "react-simple-star-rating";
+import { Rating } from "@mui/material";
 
 export interface CvPosition {
     title: string;
@@ -105,8 +105,11 @@ export const CvTemplate = (props: CvTemplateProps) => {
                                 <div className="is-flex is-flex-direction-column">
                                     {
                                         props.languages.map(x => {
-                                            return <div>
-                                                <b>{x.name}</b>: {x.level}  <Rating size={20} ratingValue={x.stars} readonly={true} />
+                                            return <div className="">
+                                                <div>
+                                                    <b>{x.name}</b>: {x.level}
+                                                </div>
+                                                <Rating value={x.stars} readOnly size="small" precision={0.5} />
                                                 <br />
                                             </div>
                                         })
