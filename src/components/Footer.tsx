@@ -1,10 +1,10 @@
 import * as React from "react";
 import { Link } from "gatsby";
 
-import github from "../../static/assets/social/github.svg";
-import instagram from "../../static/assets/social/instagram.svg";
-import twitter from "../../static/assets/social/twitter.svg";
-import linkedin from "../../static/assets/social/linkedin.svg";
+import github from "../../static/assets/social/github.png";
+import instagram from "../../static/assets/social/instagram.webp";
+import twitter from "../../static/assets/social/twitter.png";
+import linkedin from "../../static/assets/social/linkedin.png";
 
 export default function Footer() {
     return (

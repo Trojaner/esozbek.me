@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "gatsby";
-import github from "../../static/assets/social/github.svg";
+import github from "../../static/assets/social/github.png";
 
 export default function Navbar() {
   var [navBarActiveClass, setNavBarActiveClass] = useState<string>("");
@@ -48,6 +48,9 @@ export default function Navbar() {
             </Link>
             <Link className="navbar-item" to="/contact">
               Contact
+            </Link>
+            <Link className="navbar-item" to="/cv">
+              CV
             </Link>
           </div>
           <div className="navbar-end has-text-centered">

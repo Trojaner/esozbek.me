@@ -15,7 +15,6 @@ interface IndexPageTemplateProps {
   title?: string,
   heading?: string,
   subheading?: string,
-  mainpitch?: any,
   description?: string,
   intro?: IndexIntro;
 }
@@ -24,43 +23,33 @@ export function IndexPageTemplate(props: IndexPageTemplateProps) {
 
   return (
     <div>
-      <FullWidthImage image={heroImage} title={props.title || ""} subheading={props.subheading || ""} />
+      <FullWidthImage image={heroImage} title={props.title || ""} subheading={props.heading || ""} />
       <section className="section section--gradient section-index">
         <div className="container">
-          <div className="section">
-            <div className="columns">
-              <div className="column is-10 is-offset-1">
-                <div className="content">
-                  <div className="content">
-                    <div className="tile">
-                      <h1 className="title">{props.mainpitch.title}</h1>
-                    </div>
-                    <div className="tile">
-                      <h3 className="subtitle">{props.mainpitch.description}</h3>
-                    </div>
-                  </div>
-                  <div className="columns">
-                    <div className="column is-12">
-                      <h3 className="has-text-weight-semibold is-size-2">
-                        {props.heading}
-                      </h3>
-                      <p>{props.description}</p>
-                    </div>
-                  </div>
-                  {
-                    props.intro?.blurbs && props.intro.blurbs.length > 0 &&
-                    <Features gridItems={props.intro?.blurbs as FeatureGridItem[]} />
-                  }
+          <div className="columns">
+            <div className="column is-10 is-offset-1">
+              <div className="content">
+                <div className="columns">
                   <div className="column is-12">
-                    <h3 className="has-text-weight-semibold is-size-2">
-                      Latest Blog Posts
+                    <h3 className="has-text-weight-semibold is-size-2 has-text-centered">
+                      {props.subheading}
                     </h3>
-                    <BlogRoll />
-                    <div className="column is-12 has-text-centered">
-                      <Link className="button is-outlined" to="/blog">
-                        Read more
-                      </Link>
-                    </div>
+                    <p dangerouslySetInnerHTML={{ __html: props.description ?? "" }}></p>
+                  </div>
+                </div>
+                {
+                  props.intro?.blurbs && props.intro.blurbs.length > 0 &&
+                  <Features gridItems={props.intro?.blurbs as FeatureGridItem[]} />
+                }
+                <div className="column is-12">
+                  <h3 className="has-text-weight-semibold is-size-2">
+                    Latest Blog Posts
+                  </h3>
+                  <BlogRoll />
+                  <div className="column is-1 has-text-centered">
+                    <Link className="button is-outlined" to="/blog">
+                      Read more
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -82,7 +71,6 @@ export default function IndexPage({ data }) {
         title={frontmatter.title}
         heading={frontmatter.heading}
         subheading={frontmatter.subheading}
-        mainpitch={frontmatter.mainpitch}
         description={frontmatter.description}
         intro={frontmatter.intro}
       />
@@ -97,18 +85,12 @@ export const pageQuery = graphql`
         title,
         heading
         subheading
-        mainpitch {
-          title
-          description
-        }
         description
         intro {
           blurbs {
             image,
             text
           }
-          heading
-          description
         }
       }
     }
