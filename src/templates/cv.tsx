@@ -57,7 +57,7 @@ export const CvTemplate = (props: CvTemplateProps) => {
                             <div className="section is-flex is-justify-content-space-between is-flex-wrap-wrap-reverse">
                                 <div>
                                     <h2><b>Enes</b> Sadık <b>Özbek</b></h2>
-                                    <span>Snr. Software Engineer | Ankara, Turkey </span> <br />
+                                    <span>Senior Software Engineer | Ankara, Turkey </span> <br />
                                     <span><Mailto email='es.ozbek@outlook.com' /></span> <br />
                                     <a href="https://esozbek.me">https://esozbek.me</a>
                                 </div>
