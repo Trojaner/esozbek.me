@@ -25,6 +25,11 @@ export default function Footer() {
                                             Portfolio
                                         </Link>
                                     </li>
+                                    <li>
+                                        <Link className="navbar-item" to="/cv">
+                                            CV
+                                        </Link>
+                                    </li>
                                 </ul>
                             </section>
                         </div>

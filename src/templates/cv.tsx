@@ -1,6 +1,5 @@
 import { graphql } from "gatsby";
 import Layout from "../components/Layout";
-import { CmsImage } from "../types/CdnImage";
 import * as React from 'react';
 import Timeline from '@mui/lab/Timeline';
 import TimelineItem from '@mui/lab/TimelineItem';
