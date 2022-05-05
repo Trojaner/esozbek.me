@@ -21,11 +21,6 @@ export default function Footer() {
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link className="navbar-item" to="/portfolio">
-                                            Portfolio
-                                        </Link>
-                                    </li>
-                                    <li>
                                         <Link className="navbar-item" to="/cv">
                                             CV
                                         </Link>

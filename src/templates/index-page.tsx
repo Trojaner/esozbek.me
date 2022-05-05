@@ -46,11 +46,12 @@ export function IndexPageTemplate(props: IndexPageTemplateProps) {
                     Latest Blog Posts
                   </h3>
                   <BlogRoll />
-                  <div className="column is-1 has-text-centered">
-                    <Link className="button is-outlined" to="/blog">
+                  <div className="column is-9 has-text-centered">
+                    <Link className="button is-outlined is-pulled-right	" to="/blog">
                       Read more
                     </Link>
                   </div>
+                  <br/>
                 </div>
               </div>
             </div>

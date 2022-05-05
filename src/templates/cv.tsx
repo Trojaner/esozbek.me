@@ -7,12 +7,13 @@ import TimelineSeparator from '@mui/lab/TimelineSeparator';
 import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
-import PositionCard from "../components/cv/PositionCard";
+import ExperienceCard from "../components/cv/ExperienceCard";
 import { Helmet } from "react-helmet";
 import EducationCard from "../components/cv/EducationCard";
 import { Rating } from "@mui/material";
+import Mailto from 'react-protected-mailto';
 
-export interface CvPosition {
+export interface CvExperience {
     title: string;
     timeline: string;
     image: string;
@@ -34,13 +35,13 @@ export interface CvLanguage {
 
 export interface CvTemplateProps {
     title: string;
-    positions: CvPosition[];
+    experiences: CvExperience[];
     education: CvEducation[];
     languages: CvLanguage[];
+    technologies: string[];
+    honors: string[];
 }
 export const CvTemplate = (props: CvTemplateProps) => {
-
-
     return <>
         <section className="section section--gradient">
             <Helmet>
@@ -50,39 +51,48 @@ export const CvTemplate = (props: CvTemplateProps) => {
                 <div className="columns">
                     <div className="column is-10 is-offset-1">
                         <div className="section">
-                            <h2 className="title is-size-3 has-text-weight-bold is-bold-light">
+                            <h1 className="title is-size-3 has-text-weight-bold is-bold-light">
                                 {props.title}
-                            </h2>
-                            <div className="section">
-                                <h3>Positions</h3>
+                            </h1>
+                            <div className="section is-flex is-justify-content-space-between is-flex-wrap-wrap-reverse">
+                                <div>
+                                    <h2><b>Enes</b> Sadık <b>Özbek</b></h2>
+                                    <span>Snr. Software Engineer | Ankara, Turkey </span> <br />
+                                    <span><Mailto email='es.ozbek@outlook.com' /></span> <br />
+                                    <a href="https://esozbek.me">https://esozbek.me</a>
+                                </div>
+                                <img src="assets/me.jpg" className="mb-3" style={{ height: "140px", width: "auto", borderRadius: "8px" }}></img>
+                            </div>
+                            <div className="section mb-3">
+                                <h3>Experiences</h3>
                                 <Timeline position="alternate">
                                     {
-                                        props.positions.map((position, i, positions) => {
-                                            return (<>
-                                                <TimelineItem>
+                                        props.experiences.map((experience, i, experiences) => {
+                                            return (
+                                                <TimelineItem key={`${experience.company}-${experience.timeline}`}>
                                                     <TimelineSeparator>
                                                         <TimelineDot />
                                                         {
-                                                            i + 1 != positions.length &&
+                                                            i + 1 != experiences.length &&
                                                             <TimelineConnector />
                                                         }
                                                     </TimelineSeparator>
                                                     <TimelineContent>
-                                                        <PositionCard direction={i % 2 == 0 ? 'right' : 'left'} position={position} />
+                                                        <ExperienceCard direction={i % 2 == 0 ? 'right' : 'left'} experience={experience} />
                                                     </TimelineContent>
                                                 </TimelineItem>
-                                            </>)
+                                            )
                                         })
                                     }
                                 </Timeline>
                             </div>
-                            <div className="section">
+                            <div className="section mb-3">
                                 <h3>Education</h3>
                                 <Timeline position="alternate">
                                     {
                                         props.education.map((education, i, educations) => {
-                                            return (<>
-                                                <TimelineItem>
+                                            return (
+                                                <TimelineItem key={`${education.organization}-${education.timeline}`}>
                                                     <TimelineSeparator>
                                                         <TimelineDot />
                                                         {
@@ -93,26 +103,49 @@ export const CvTemplate = (props: CvTemplateProps) => {
                                                     <TimelineContent>
                                                         <EducationCard direction={i % 2 == 0 ? 'right' : 'left'} education={education} />
                                                     </TimelineContent>
-                                                </TimelineItem>
-                                            </>)
+                                                </TimelineItem>)
                                         })
                                     }
                                 </Timeline>
                             </div>
                             <div className="section">
-                                <h3>Languages</h3>
-                                <div className="is-flex is-flex-direction-column">
-                                    {
-                                        props.languages.map(x => {
-                                            return <div className="">
-                                                <div>
-                                                    <b>{x.name}</b>: {x.level}
-                                                </div>
-                                                <Rating value={x.stars} readOnly size="small" precision={0.5} />
-                                                <br />
-                                            </div>
-                                        })
-                                    }
+                                <div className="columns">
+                                    <div className="column is-third">
+                                        <h3>Languages</h3>
+                                        <div className="is-flex is-flex-direction-column">
+                                            {
+                                                props.languages.map(x => {
+                                                    return <div key={x.name}>
+                                                        <div>
+                                                            <b>{x.name}</b>: {x.level}
+                                                        </div>
+                                                        <Rating value={x.stars} readOnly size="small" precision={0.5} />
+                                                        <br />
+                                                    </div>
+                                                })
+                                            }
+                                        </div>
+                                    </div>
+                                    <div className="column is-third">
+                                        <h3>Technologies</h3>
+                                        <ul>
+                                            {
+                                                props.technologies.map(x => {
+                                                    return <li key={x}><b>{x}</b></li>;
+                                                })
+                                            }
+                                        </ul>
+                                    </div>
+                                    <div className="column is-third">
+                                        <h3>Honors & awards</h3>
+                                        <ul>
+                                            {
+                                                props.honors.map(x => {
+                                                    return <li key={x}><b>{x}</b></li>;
+                                                })
+                                            }
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -130,9 +163,11 @@ export default function IndexPage({ data }) {
         <Layout>
             <CvTemplate
                 title={frontmatter.title}
-                positions={frontmatter.positions}
+                experiences={frontmatter.experiences}
                 education={frontmatter.education}
                 languages={frontmatter.languages}
+                technologies={frontmatter.technologies}
+                honors={frontmatter.honors}
             />
         </Layout>
     );
@@ -143,7 +178,7 @@ export const pageQuery = graphql`
       mdx(frontmatter: { templateKey: { eq: "cv" } }) {
         frontmatter {
           title,
-          positions {
+          experiences {
             title,
             timeline,
             image,
@@ -159,7 +194,9 @@ export const pageQuery = graphql`
               name,
               level,
               stars
-          }
+          },
+          technologies,
+          honors
         }
       }
     }

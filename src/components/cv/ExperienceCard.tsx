@@ -1,27 +1,27 @@
 import { height } from "@mui/system";
 import { GatsbyImage } from "gatsby-plugin-image";
 import React from "react"
-import { CvPosition } from "../../templates/cv"
+import { CvExperience } from "../../templates/cv"
 
 interface PositionCardProps {
-    position: CvPosition;
+    experience: CvExperience;
     direction: 'left' | 'right';
 }
-export default function PositionCard(props: PositionCardProps) {
+export default function ExperienceCard(props: PositionCardProps) {
     const directionClass = props.direction == 'left' ? "is-flex-direction-row-reverse" : "is-flex-direction-row";
 
     return (
         <>
             <div className={"is-flex is-align-content-center is-flex-wrap-wrap " + directionClass}>
                 <div style={{ marginLeft: "10px", marginRight: "15px" }}>
-                    <img src={props.position.image} style={{maxHeight: "50px", width: "auto"}} />
+                    <img src={props.experience.image} style={{maxHeight: "50px", width: "auto"}} />
                 </div>
                 <div>
-                    {props.position.timeline}
+                    {props.experience.timeline}
                     <br />
-                    <b>{props.position.title}</b>
+                    <b>{props.experience.title}</b>
                     <br />
-                    {props.position.company}
+                    {props.experience.company}
                 </div>
             </div>
         </>
