@@ -121,8 +121,8 @@ export const CvTemplate = (props: CvTemplateProps) => {
 
                             <div id="pdfContent-p1" className="content">
                                 <div className="is-flex is-flex-direction-row is-justify-content-flex-start">
-                                    <div className="content" style={{ flex: 1 }}>
-                                        <div className="section has-background-dark" style={{ height: "100%" }}>
+                                    <div className="content is-flex" style={{ flex: 1, marginBottom: 0 }}>
+                                        <div className="section has-background-dark">
                                             <GatsbyImage image={props.portrait} alt="Enes Sadık Özbek" style={{ borderRadius: "8px" }} />
                                             <h3 className="has-text-info-light">
                                                 About me
