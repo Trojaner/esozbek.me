@@ -51,7 +51,7 @@ export function IndexPageTemplate(props: IndexPageTemplateProps) {
                       Read more
                     </Link>
                   </div>
-                  <br/>
+                  <br />
                 </div>
               </div>
             </div>
@@ -89,7 +89,15 @@ export const pageQuery = graphql`
         description
         intro {
           blurbs {
-            image,
+            image {
+              childImageSharp {
+                gatsbyImageData(
+                    height: 300
+                    quality: 100
+                    layout: CONSTRAINED
+                  )
+              }
+            }
             text
           }
         }

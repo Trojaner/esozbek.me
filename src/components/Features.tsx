@@ -23,10 +23,10 @@ const FeatureGrid = (props: FeatureGridProps) => (
                 display: "inline-block",
               }}
             >
-              <GatsbyImage alt={""} {...item} />
+              <GatsbyImage alt={""} image={item.image.childImageSharp.gatsbyImageData} />
             </div>
           </div>
-          <p>{item.text}</p>
+          <p className="mt-5">{item.text}</p>
         </section>
       </div>
     ))}
