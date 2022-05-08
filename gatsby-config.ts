@@ -93,8 +93,7 @@ const config: GatsbyConfig = {
       options: {
         shortname: `esozbek`
       }
-    },
-    "gatsby-plugin-remove-fingerprints"
+    }
   ]
 };
 
