@@ -13,9 +13,12 @@ export default function ExperienceCard(props: PositionCardProps) {
     return (
         <>
             <div className={"is-flex is-align-content-center is-flex-wrap-wrap " + directionClass}>
-                <div style={{ marginLeft: "10px", marginRight: "15px" }}>
-                    <img src={props.experience.image} style={{maxHeight: "50px", width: "auto"}} />
-                </div>
+                {
+                    props.experience.image &&
+                    <div style={{ marginLeft: "10px", marginRight: "15px" }}>
+                        <GatsbyImage image={props.experience.image.childImageSharp.gatsbyImageData} alt={props.experience.company} />
+                    </div>
+                }
                 <div>
                     {props.experience.timeline}
                     <br />

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, graphql, StaticQuery } from 'gatsby'
-import PreviewCompatibleImage from './PreviewCompatibleImage'
 import moment from 'moment';
+import { GatsbyImage } from 'gatsby-plugin-image';
 
 export function BlogPostPreview(props: any) {
     const { post } = props;
@@ -30,8 +30,9 @@ export function BlogPostPreview(props: any) {
                     {post.frontmatter.featuredImage && (
                         <div className="featured-thumbnail is-flex is-justify-content-space-between is-flex-direction-row-reversed" style={{ paddingTop: "15px" }}>
                             <div/>
-                            <PreviewCompatibleImage
-                                image={post.frontmatter.featuredImage}
+                            <GatsbyImage
+                                style={{borderRadius: "5px"}}
+                                image={post.frontmatter.featuredImage.childImageSharp.gatsbyImageData}
                                 alt={`Thumbnail for post ${post.frontmatter.title}`}
                             />
                         </div>

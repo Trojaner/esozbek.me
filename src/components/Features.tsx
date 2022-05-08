@@ -1,6 +1,6 @@
+import { GatsbyImage } from "gatsby-plugin-image";
 import * as React from "react";
 import { CmsImage } from "../types/CdnImage";
-import PreviewCompatibleImage from "./PreviewCompatibleImage";
 
 export interface FeatureGridItem {
   image: CmsImage;
@@ -23,7 +23,7 @@ const FeatureGrid = (props: FeatureGridProps) => (
                 display: "inline-block",
               }}
             >
-              <PreviewCompatibleImage {...item} />
+              <GatsbyImage alt={""} {...item} />
             </div>
           </div>
           <p>{item.text}</p>

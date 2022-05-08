@@ -1,7 +1,6 @@
-import { height } from "@mui/system";
 import { GatsbyImage } from "gatsby-plugin-image";
 import React from "react"
-import { CvEducation, CvPosition } from "../../templates/cv"
+import { CvEducation } from "../../templates/cv"
 
 interface EducationCardProps {
     education: CvEducation;
@@ -13,9 +12,12 @@ export default function EducationCard(props: EducationCardProps) {
     return (
         <>
             <div className={"is-flex is-align-content-center is-flex-wrap-wrap " + directionClass}>
-                <div style={{ marginLeft: "10px", marginRight: "15px" }}>
-                    <img src={props.education.image} style={{maxHeight: "50px", width: "auto"}} />
-                </div>
+                {
+                    props.education.image && 
+                    <div style={{ marginLeft: "10px", marginRight: "15px" }}>
+                        <GatsbyImage image={props.education.image.childImageSharp.gatsbyImageData} alt={props.education.organization} />
+                    </div>
+                }
                 <div>
                     {props.education.timeline}
                     <br />
