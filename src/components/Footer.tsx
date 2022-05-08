@@ -2,7 +2,7 @@ import * as React from "react";
 import { Link } from "gatsby";
 
 import github from "../../static/assets/social/github.png";
-import instagram from "../../static/assets/social/instagram.webp";
+import instagram from "../../static/assets/social/instagram.png";
 import twitter from "../../static/assets/social/twitter.png";
 import linkedin from "../../static/assets/social/linkedin.png";
 
@@ -67,7 +67,7 @@ export default function Footer() {
                                     style={{ width: "2.5em", height: "2.5em" }}
                                 />
                             </a>
-                            <a title="LinkedIn" href="https://linkedin.com/esozbek">
+                            <a title="LinkedIn" href="https://linkedin.com/in/esozbek">
                                 <img
                                     src={linkedin}
                                     alt="LinkedIn"
