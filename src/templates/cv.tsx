@@ -116,7 +116,6 @@ export const CvTemplate = (props: CvTemplateProps) => {
                                 <h1 className="title is-size-3 has-text-weight-bold is-bold-light">
                                     {props.title}
                                 </h1>
-                                <button className="button is-light is-small ml-4" onClick={generatePDF}>Download PDF</button>
                             </div>
 
                             <div id="pdfContent-p1" className="content">
