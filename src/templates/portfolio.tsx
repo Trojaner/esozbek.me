@@ -3,16 +3,19 @@ import { graphql } from "gatsby";
 import Layout from "../components/Layout";
 import { MDXRenderer } from "gatsby-plugin-mdx"
 import { Helmet } from "react-helmet";
+import useSiteMetadata from "../components/SiteMetadata";
 
 interface PortfolioPageTemplateProps {
   title: string;
   content: string;
 }
 export function PortfolioPageTemplate(props: PortfolioPageTemplateProps) {
+  const siteMetadata = useSiteMetadata();
+
   return (
     <section className="section section--gradient">
       <Helmet>
-        <title>{props.title} - Enes Sadık Özbek</title>
+        <title>{props.title} | {siteMetadata.title}</title>
       </Helmet>
       <div className="container content">
         <div className="columns">

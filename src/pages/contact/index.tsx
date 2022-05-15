@@ -42,7 +42,7 @@ export default class Index extends React.Component {
       <Layout>
         <section className="section">
           <Helmet>
-            <title>Contact - Enes Sadık Özbek</title>
+            <title>Contact | Enes Sadık Özbek</title>
           </Helmet>
           <div className="container content">
             <div className="columns">

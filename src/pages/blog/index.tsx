@@ -9,7 +9,7 @@ export default class BlogIndexPage extends React.Component {
     return (
       <Layout>
         <Helmet>
-          <title>Blog - Enes Sadık Özbek</title>
+          <title>Blog | Enes Sadık Özbek</title>
         </Helmet>
         <div
           className="full-width-image-container margin-top-0"

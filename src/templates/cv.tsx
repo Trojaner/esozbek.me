@@ -12,13 +12,13 @@ import { Helmet } from "react-helmet";
 import EducationCard from "../components/cv/EducationCard";
 import { Rating } from "@mui/material";
 import Mailto from 'react-protected-mailto';
-import JsPDF, { HTMLOptions } from 'jspdf';
 import { CmsImage } from "../types/CdnImage";
 import { GatsbyImage, IGatsbyImageData } from "gatsby-plugin-image";
 import github from "../../static/assets/social/github.png";
 import instagram from "../../static/assets/social/instagram.png";
 import twitter from "../../static/assets/social/twitter.png";
 import linkedin from "../../static/assets/social/linkedin.png";
+import useSiteMetadata from "../components/SiteMetadata";
 
 export interface CvExperience {
     title: string;
@@ -58,55 +58,12 @@ export interface CvTemplateProps {
     projects: CvProject[];
 }
 export const CvTemplate = (props: CvTemplateProps) => {
-    const generatePDF = () => {
-        const pdf = new JsPDF('portrait', 'px', 'a4');
-        const opts: HTMLOptions = {
-            fontFaces: [
-                {
-                    family: 'Roboto',
-                    src: [{ url: '/assets/Roboto-Regular.ttf', format: 'truetype' }],
-                    weight: 400,
-                    stretch: 'normal',
-                    style: 'normal'
-                },
-                {
-                    family: 'Roboto',
-                    src: [{ url: '/assets/Roboto-Italic.ttf', format: 'truetype' }],
-                    weight: 400,
-                    stretch: 'normal',
-                    style: 'italic'
-                },
-                {
-                    family: 'Roboto',
-                    src: [{ url: '/assets/Roboto-Bold.ttf', format: 'truetype' }],
-                    weight: 700,
-                    stretch: 'normal',
-                    style: 'normal'
-                }
-            ],
-            html2canvas: {
-                useCORS: true,
-                scale: 0.435,
-                allowTaint: true,
-                backgroundColor: '#fff',
-                letterRendering: true
-            },
-        };
-
-        const firstPage = document.querySelector('#pdfContent-p1') as HTMLElement;
-
-        if (firstPage != null) {
-            pdf.html(firstPage, opts)
-                .then(() => {
-                    pdf.save('Enes Sadık Özbek - CV.pdf');
-                });
-        }
-    }
+    const siteMetadata = useSiteMetadata();
 
     return <>
         <section className="section section--gradient">
             <Helmet>
-                <title>CV - Enes Sadık Özbek</title>
+                <title>CV | {siteMetadata.title}</title>
             </Helmet>
             <div className="container content">
                 <div className="columns">

@@ -5,6 +5,7 @@ import { graphql, Link } from "gatsby";
 import Layout from "../components/Layout";
 import { Disqus } from 'gatsby-plugin-disqus';
 import { MDXRenderer } from "gatsby-plugin-mdx";
+import useSiteMetadata from "../components/SiteMetadata";
 
 interface BlogPostTemplateProps {
   id?: string;
@@ -57,7 +58,8 @@ export const BlogPostTemplate = (props: BlogPostTemplateProps) => {
 
 export default function BlogPost({ data }) {
   const post = data.mdx;
-
+  const siteMetadata = useSiteMetadata();
+  
   return (
     <Layout>
       <BlogPostTemplate
@@ -66,7 +68,7 @@ export default function BlogPost({ data }) {
         description={post.frontmatter.description}
         helmet={
           <Helmet titleTemplate="%s | Blog">
-            <title>{`${post.frontmatter.title}`} - Enes Sadık Özbek</title>
+            <title>{`${post.frontmatter.title}`} | {siteMetadata.title}</title>
             <meta
               name="description"
               content={`${post.frontmatter.description}`}

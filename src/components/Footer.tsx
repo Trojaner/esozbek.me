@@ -49,7 +49,7 @@ export default function Footer() {
                                 <img
                                     src={github}
                                     alt="GitHub"
-                                    style={{ width: "2.5em", height: "2.5em" }}
+                                    style={{ width: "2em", height: "2em" }}
                                 />
                             </a>
                             <a title="Twitter" href="https://twitter.com/Trojaner_">

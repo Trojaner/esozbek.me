@@ -19,11 +19,11 @@ const FeatureGrid = (props: FeatureGridProps) => (
           <div className="has-text-centered">
             <div
               style={{
-                width: "240px",
+                width: "180px",
                 display: "inline-block",
               }}
             >
-              <GatsbyImage alt={""} image={item.image.childImageSharp.gatsbyImageData} />
+              <GatsbyImage alt={""} image={item.image.childImageSharp.gatsbyImageData} loading="eager"  />
             </div>
           </div>
           <p className="mt-5">{item.text}</p>

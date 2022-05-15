@@ -2,6 +2,7 @@ import * as React from "react"
 import { useEffect } from "react"
 import Layout from "../components/Layout";
 import { Helmet } from "react-helmet";
+import useSiteMetadata from "../components/SiteMetadata";
 
 const NotFoundPage = () => {
   useEffect(() => {
@@ -10,11 +11,13 @@ const NotFoundPage = () => {
     }, 5000);
   }, []);
 
+  const siteMetadata = useSiteMetadata();
+
   return (
     <Layout>
       <section className="section">
         <Helmet>
-          <title>Contact - Enes Sadık Özbek</title>
+          <title>Not Found | {siteMetadata.title}</title>
         </Helmet>
         <div className="container content">
           <div className="columns">

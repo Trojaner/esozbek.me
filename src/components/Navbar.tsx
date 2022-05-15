@@ -39,8 +39,8 @@ export default function Navbar() {
           id="navMenu"
           className={`navbar-menu ${navBarActiveClass}`}
         >
-          <div className="navbar-start has-text-centered">
-            <Link className="navbar-item" to="/blog">
+          <div className="navbar-end has-text-centered">
+          <Link className="navbar-item" to="/blog">
               Blog
             </Link>
             <Link className="navbar-item" to="/cv">
@@ -49,18 +49,6 @@ export default function Navbar() {
             <Link className="navbar-item" to="/contact">
               Contact
             </Link>
-          </div>
-          <div className="navbar-end has-text-centered">
-            <a
-              className="navbar-item"
-              href="https://github.com/Trojaner/esozbek.me"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span className="icon">
-                <img src={github} alt="Github" />
-              </span>
-            </a>
           </div>
         </div>
       </div>
