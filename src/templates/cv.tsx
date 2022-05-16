@@ -262,7 +262,7 @@ export default function IndexPage({ data }) {
 
 export const pageQuery = graphql`
     query CvTemplateProps {
-        file(relativePath: { eq: "me.jpg" }) {
+        file(relativePath: { eq: "me.png" }) {
             childImageSharp {
                 gatsbyImageData(
                     formats: [PNG]
