@@ -3,7 +3,13 @@ const path = require('path')
 const { createFilePath } = require("gatsby-source-filesystem")
 
 exports.createPages = ({ actions, graphql }) => {
-  const { createPage } = actions
+  const { createPage, createRedirect } = actions; 
+  
+  createRedirect({
+    fromPath: `/inline-assembly-in-csharp-and-dotnet`,
+    toPath: `/blog/inline-assembly-in-csharp-and-dotnet`,
+    isPermanent: true
+  });
 
   return graphql(`
     {

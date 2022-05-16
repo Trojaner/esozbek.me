@@ -1,0 +1,227 @@
+---
+templateKey: blog-post
+title: Inline assembly in C# and .NET
+date: 2018-11-04T00:00:00.000Z
+description: "A short guide on running x86 assembly from C#."
+featuredPost: false
+featuredImage: ../../../static/uploads/inline-assembly-in-csharp-and-dotnet.png
+tags:
+  - csharp
+---
+Have you ever wondered if you could write inline assembly in C# (or any other .NET-based language) like you can do with C/C++? Well, you probably did not, but if you plan to write speed critical code, it might be worth learning it.
+
+**Advantages of Inline Assembly**
+* Write highly optimized, speed critical code
+* Directly access hardware and registers  
+
+**Disadvantages of Inline Assembly**
+* One big advantage of .NET is that it’s portable, but if you utilize inline assembly you will be stuck to one or more specific platforms (e.g. x86 and/or x64).
+* Higher risk of doing programming errors like memory leaks
+* Hard to debug
+
+## Requirements
+* Beginner level x86 assembly language knowledge (you should at least know calling conventions, push, pop, mov, call, registers, etc.)
+* Process.NET (optional) – it contains very useful memory abstractions.,
+* Fasm.NET (optional)  (not available for .NET Core since it’s utilizes C++/CLI) – .NET wrapper for FASM assembler
+
+Fasm.NET allows you to assemble assembly code from C# directly. Hence, your code will be more readable and also more maintainable. However, you can also use any other assembler or just hardcode the instructions directly (see example 4 and 5).
+
+## Setting Up the Project
+Create a new console project. In this tutorial we will be using the x86 instruction set. This means that our program must also run in x86 mode. .NET projects will default to AnyCPU configuration, which would be problematic as we will only target x86. 
+Open the .csproj and add the following line to enforce x86 mode to your &lt;PropertyGroup&gt;: `<PlatformTarget>x86</PlatformTarget>`.
+
+For example 5 we will use unsafe code. To enable unsafe code, add `<AllowUnsafeBlocks>true</AllowUnsafeBlocks>` to your &lt;PropertyGroup&gt;.
+
+> Note: If you want to use inline assembly with .NET Core, you should skip the first four examples, as they depend on libraries which are not available for .NET Core.
+
+## Using Inline Assembly in C#
+
+### Example 1: Function returning a constant value
+```csharp
+[SuppressUnmanagedCodeSecurity] // disable security checks for better performance
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)] // cdecl - let caller (.NET) clean the stack for us
+private delegate int AssemblyConstantValueFunction();
+static void Main(string[] args)
+{
+    const int valueToReturn = 1;
+    var currentProcess = new ProcessSharp(System.Diagnostics.Process.GetCurrentProcess(), MemoryType.Local);
+    FasmNet fasmNet = new FasmNet();
+    // This function will simply return "1".  
+    fasmNet.AddLine("use32"); //Tell FASM.Net to use x86 (32bit) mode
+    fasmNet.AddLine("mov eax, {0}", {valueToReturn}); // copy "valueToReturn" variables value to eax
+    fasmNet.AddLine("ret"); // in cdecl calling convention, return value is stored in eax; so this will return 1
+    byte[] assembledCode = fasmNet.Assemble();
+    // Allocate and write our assembled code to a constant location in heap (using Process.NET)
+    var allocatedCodeMemory = currentProcess.MemoryFactory.Allocate(
+        name: "Example1", // only used for debugging; not really needed
+        size: assembledCode.Length,
+        protection: MemoryProtectionFlags.ExecuteReadWrite /* It is important to mark the memory as executeable or we might get exceptions from DEP */
+    );
+    allocatedCodeMemory.Write(0, assembledCode); 
+    var myAssemblyFunction = Marshal.GetDelegateForFunctionPointer<AssemblyConstantValueFunction>(allocatedCodeMemory.BaseAddress);
+    var returnValue = myAssemblyFunction();
+    // Warning: Potential memory leak!
+    // Do not forget to dispose the allocated code memory after usage. 
+    allocatedCodeMemory.Dispose();
+    Console.WriteLine($"Example1 return value: {returnValue}, expected: {valueToReturn}");
+    Console.ReadKey(true);
+}
+```
+
+### Example 2: Function Reading Registers
+```csharp
+[SuppressUnmanagedCodeSecurity] // disable security checks for better performance
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)] // cdecl - let caller (.NET) clean the stack
+private delegate IntPtr AssemblyReadRegistersFunction();
+static void Main(string[] args)
+{
+    var currentProcess = new ProcessSharp(System.Diagnostics.Process.GetCurrentProcess(), MemoryType.Local);
+    FasmNet fasmNet = new FasmNet();
+    fasmNet.AddLine("use32"); //Tell FASM.Net to use x86 (32bit) mode
+    fasmNet.AddLine("mov eax, [ebp+4]"); // Set return value to ebp+4 (return address)
+    fasmNet.AddLine("ret"); // in cdecl calling convention, return value is stored in eax; so this will return the return address
+    byte[] assembledCode = fasmNet.Assemble();
+    var allocatedCodeMemory = currentProcess.MemoryFactory.Allocate(
+        name: "Example2", // only used for debugging; not really needed
+        size: assembledCode.Length,
+        protection: MemoryProtectionFlags.ExecuteReadWrite /* It is important to mark the memory as executeable or we will get exceptions from DEP */
+    );
+    allocatedCodeMemory.Write(0, assembledCode);
+    var myAssemblyFunction = Marshal.GetDelegateForFunctionPointer<AssemblyReadRegistersFunction>(allocatedCodeMemory.BaseAddress);
+    var returnValue = myAssemblyFunction();
+    // Warning: Potential memory leak!
+    // Do not forget to dispose the allocated code memory after usage. 
+    allocatedCodeMemory.Dispose();
+    Console.WriteLine($"Example2 return value: 0x{returnValue.ToInt32():X}"); // Prints this methods JIT'ed address
+    Console.ReadKey(true);
+}
+```
+
+### Example 3: Add Function With Parameters
+```csharp
+[SuppressUnmanagedCodeSecurity] // disable security checks for better performance
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)] // cdecl - let caller (.NET CLR) clean the stack
+private delegate int AssemblyAddFunction(int x, int y);
+static void Main(string[] args)
+{
+    var currentProcess = new ProcessSharp(System.Diagnostics.Process.GetCurrentProcess(), MemoryType.Local);
+    FasmNet fasmNet = new FasmNet();
+    fasmNet.AddLine("use32"); //Tell FASM.Net to use x86 (32bit) mode
+    fasmNet.AddLine("push ebp"); // init stack frame
+    fasmNet.AddLine("mov ebp, esp"); // move base pointer
+    fasmNet.AddLine("mov eax, [ebp+12]"); // set eax to second param (remember, in cdecl calling convention, params are pushed right-to-left)
+    fasmNet.AddLine("mov edx, [ebp+8]"); // set edx to first param
+    fasmNet.AddLine("add eax, edx"); //add edx (first param) to eax (second param) 
+    fasmNet.AddLine("mov esp, ebp"); // reset base pointer
+    fasmNet.AddLine("pop ebp"); // leave stack frame
+    fasmNet.AddLine("ret");  // in cdecl calling convention, return value is stored in eax; so this will return both params added up
+    byte[] assembledCode = fasmNet.Assemble();
+    var allocatedCodeMemory = _currentProcess.MemoryFactory.Allocate(
+        name: "Example3", // only used for debugging; not really needed
+        size: assembledCode.Length,
+        protection: MemoryProtectionFlags.ExecuteReadWrite /* It is important to mark the memory as executeable or we will get exceptions from DEP */
+    );
+    allocatedCodeMemory.Write(0, assembledCode);
+    var myAssemblyFunction = Marshal.GetDelegateForFunctionPointer<AssemblyAddFunction>(allocatedCodeMemory.BaseAddress);
+    var returnValue = myAssemblyFunction(10, -15);
+    // Warning: Potential memory leak!
+    // Do not forget to dispose the allocated code memory after usage. 
+    allocatedCodeMemory.Dispose();
+    Console.WriteLine($"Example3 return value: {returnValue}, expected: -5"); // Prints -5
+    Console.ReadKey(true);
+}
+```
+
+### Example 4: Add Function With Parameters (Without Fasm.NET)
+```csharp
+[SuppressUnmanagedCodeSecurity] // disable security checks for better performance
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)] // cdecl - let caller (.NET CLR) clean the stack
+private delegate int AssemblyAddFunction(int x, int y);
+static void Main(string[] args)
+{
+    var currentProcess = new ProcessSharp(System.Diagnostics.Process.GetCurrentProcess(), MemoryType.Local);
+    //You can use any x86 assembler
+    //For this example I have used https://defuse.ca/online-x86-assembler.htm
+    // Without FASM.Net I strongly suggest you to comment each instruction (e.g. "0 push ebp")
+    byte[] assembledCode =
+    {
+        0x55,               // 0 push ebp            ; init stack frame
+        0x89, 0xE5,         // 1 mov  ebp, esp       ; move base pointer
+        0x8B, 0x45, 0x0C,   // 3 mov  eax, [ebp+12]   ; set eax to second param (remember, in cdecl calling convention, params are pushed right-to-left)
+        0x8B, 0x55, 0x08,   // 6 mov  edx, [ebp+8]  ; set edx to first param
+        0x01, 0xD0,         // 9 add  eax, edx       ; add edx (first param) to eax (second param) 
+        0x89, 0xEC,         // A mov  esp, ebp       ; reset base pointer
+        0x5D,               // C pop  ebp            ; leave stack frame
+        0xC3                // D ret                 ; in cdecl calling convention, return value is stored in eax; so this will return both params added up
+    };
+    var allocatedCodeMemory = _currentProcess.MemoryFactory.Allocate(
+        name: "Example4", // only used for debugging; not really needed
+        size: assembledCode.Length,
+        protection: MemoryProtectionFlags.ExecuteReadWrite /* It is important to mark the memory as executeable or we will get exceptions from DEP */
+    );
+    allocatedCodeMemory.Write(0, assembledCode);
+    var myAssemblyFunction = Marshal.GetDelegateForFunctionPointer<AssemblyAddFunction>(allocatedCodeMemory.BaseAddress);
+    var returnValue = myAssemblyFunction(10, -15);
+    // Warning: Potential memory leak!
+    // Do not forget to dispose the allocated code memory after usage. 
+    allocatedCodeMemory.Dispose();
+    Console.WriteLine($"Example3 (no Fasm.NET) return value: {returnValue}, expected: -5"); // Prints -5
+    Console.ReadKey(true);
+}
+```
+
+### Example 5: Add Function With Parameters (without any dependencies)
+```csharp
+[SuppressUnmanagedCodeSecurity] // disable security checks for better performance
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)] // cdecl - let caller (.NET CLR) clean the stack
+private delegate int AssemblyAddFunction(int x, int y);
+[DllImport("kernel32.dll")]
+private static extern bool VirtualProtectEx(IntPtr hProcess, IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect); 
+static void Main(string[] args)
+{
+    var process = System.Diagnostics.Process.GetCurrentProcess();
+    //You can use any x86 assembler
+    //For this example I have used https://defuse.ca/online-x86-assembler.htm
+    // Without FASM.Net I strongly suggest you to comment each instruction (e.g. "0 push ebp")
+    byte[] assembledCode =
+    {
+        0x55,               // 0 push ebp            ; init stack frame
+        0x89, 0xE5,         // 1 mov ebp, esp ; move base pointer
+        0x8B, 0x45, 0x0C,   // 3 mov  eax, [ebp+12]   ; set eax to second param (remember, in cdecl calling convention, params are pushed right-to-left)
+        0x8B, 0x55, 0x08,   // 6 mov  edx, [ebp+8]  ; set edx to first param
+        0x01, 0xD0,         // 9 add  eax, edx       ; add edx (first param) to eax (second param) 
+        0x89, 0xEC,         // A mov esp, ebp ; reset base pointer        
+        0x5D,               // C pop  ebp            ; leave stack frame
+        0xC3                // D ret                 ; in cdecl calling convention, return value is stored in eax; so this will return both params added up
+    };
+    int returnValue;
+    unsafe
+    {
+        fixed (byte* ptr = assembledCode)
+        {
+            var memoryAddress = (IntPtr)ptr;
+            // Mark memory as EXECUTE_READWRITE to prevent DEP exceptions
+            if (!VirtualProtectEx(process.Handle, memoryAddress,
+            (UIntPtr) assembledCode.Length, 0x40 /* EXECUTE_READWRITE */, out uint _))
+            {
+                throw new Win32Exception();
+            }
+            var myAssemblyFunction = Marshal.GetDelegateForFunctionPointer<AssemblyAddFunction>(memoryAddress);
+            returnValue = myAssemblyFunction(10, -15);
+        }               
+    }
+    // Note: We do not have to dispose memory ourself; the CLR will handle this.  
+    Console.WriteLine($"Example3 (no dependencies) return value: {returnValue}, expected: -5"); // Prints -5
+    Console.ReadKey(true);
+}
+```
+
+### Notes
+* Examples 1-4 only work with .NET Framework as they utilzie .NET Core incompatible libraries.
+* Example 5 works on any .NET runtime (mono/.NET Core/.NET Framework).
+* Keep in mind that this tutorial does not cache the compiled result
+* Always flag the allocated memory as executable (e.g. via VirtualProtectEx, see Example 5). Otherwise, you might get exceptions from DEP.
+* Always deallocate the memory you have allocated to prevent memory leaks (when not using fixed statements).
+
+You can find all code on GitHub:
+https://github.com/Trojaner/csharp-inline-assembly.
