@@ -4,6 +4,7 @@ import Footer from "./Footer";
 import Navbar from "./Navbar";
 import useSiteMetadata from "./SiteMetadata";
 import { withPrefix } from "gatsby";
+import { ScrollToTopButton } from "./ScrollToTopButton";
 
 const TemplateWrapper = ({ children }) => {
     const { title, description } = useSiteMetadata();
@@ -33,6 +34,7 @@ const TemplateWrapper = ({ children }) => {
             </Helmet>
             <div className="site-content">
                 <Navbar />
+                <ScrollToTopButton />
                 <div className="main">{children}</div>
                 <Footer />
             </div>

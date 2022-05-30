@@ -195,3 +195,23 @@ $menu-label-color: $white-ter;
   text-align: revert; 
   vertical-align: revert; 
 }
+
+.scroll-to-top-button {
+  position: fixed;
+  bottom: 1em;
+  right: 1em;
+  z-index: 100;
+  border-radius: 50%;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 0.5em;
+  box-shadow: 0 0 0.1em 0.1em #ccc;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.icon {
+  color: #000;
+  font-size: 1.5em;
+  transition: all 0.2s ease-in-out;
+}
