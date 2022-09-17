@@ -1,0 +1,146 @@
+
+---
+templateKey: blog-post
+title: C#'s "is null" Considered Harmful
+date: 2022-09-17T00:00:00.000Z
+description: "C#'s "is" operator allows a different kind of null checking, but in some cases, this may cause bugs that may be hard to debug"
+featuredPost: false
+featuredImage: ../../../static/uploads/csharps-is-null-considered-harmful.png
+tags:
+  - csharp
+  - unity
+---
+# Intro
+Some years ago, C# 7 introduced the [`is`](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/is) operator for pattern matching.  
+  
+The `is` operator for pattern matching also introduced an alternative null check, by using `x is null` instead of `x == null`.  However, the `x is null` null check does not work the same way as `x == null` and there is a good reason why.
+
+# Difference between `x == null` and `x is null`
+In most cases, you will not notice a difference between both usages:  
+
+```csharp
+var x = null as string; // or any other "normal" C# type
+
+if (x is null) 
+{
+  // true
+}
+
+if (x == null)
+{
+  // true
+}
+```
+  
+However, it's these edge cases that will cause hard to debug bugs.  
+Lets change the example above and use a special type instead:  
+
+```csharp
+var x = new IsNullExample();
+
+if (x is null) 
+{
+  // false
+}
+
+if (x == null)
+{
+  // true
+}
+```
+
+Wait, what just happened here?  
+Let's take a look at the definition of the `IsNullExample` class:  
+```csharp
+class IsNullExample
+{
+    public static bool operator == (IsNullExample left, IsNullExample right)
+    {
+        if (Object.ReferenceEquals(right, null))
+        {
+           return true;
+        }
+        
+        return Object.ReferenceEquals(left, right);
+    }
+    
+    // This is mandatory if you overload the == operator
+    public static bool operator!= (IsNullExample left, IsNullExample right)
+    {
+        return !(left == right);
+    }
+}
+```
+
+As you may have already guessed, using `x is null` does not invoke the `==` operator. This is why it exists in the first place.  
+  
+According to the [Microsoft docs for the `is` operator](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/is):  
+> When you match an expression against null, the compiler guarantees that no user-overloaded == or != operator is invoked.  
+  
+Now you may wonder why you or anyone else would ever want to override null checks for the `==` operator. Well, overloading `==` for custom null checks is actually often used when wrapping a native object with C#.
+    
+Let's see how this is the case with the Unity engine.
+
+# Case study: Unity
+[Unity](https://unity.com/) `Object`s such as `GameObject`, `MonoBehavior` or `Component` overload the `==` operator and return true if checking for null when the native counterpart got destroyed. 
+
+To understand how this is implemented, let's inspect the Unity [source code for `Object`](https://github.com/Unity-Technologies/UnityCsReference/blob/73c12b5a403abad9a300f01a81e7aaf30a0d30b5/Runtime/Export/Scripting/UnityEngineObject.bindings.cs#L390):  
+
+```csharp
+namespace UnityEngine
+{
+    public partial class Object
+    {
+        // ...
+        public static bool operator==(Object x, Object y) { return CompareBaseObjects(x, y); }
+    
+        public static bool operator!=(Object x, Object y) { return !CompareBaseObjects(x, y); }
+
+        public override bool Equals(object other)
+        {
+            Object otherAsObject = other as Object;
+            // A UnityEngine.Object can only be equal to another UnityEngine.Object - or null if it has been destroyed.
+            // Make sure other is a UnityEngine.Object if "as Object" fails. The explicit "is" check is required since the == operator
+            // in this class treats destroyed objects as equal to null
+            if (otherAsObject == null && other != null && !(other is Object))
+                return false;
+            return CompareBaseObjects(this, otherAsObject);
+        }
+        // ...
+    }
+}
+````
+
+Here is an example scenario where `x is null` is used wrong:
+```csharp
+var x = new GameObject();
+UnityEngine.Object.DestroyImmediate(x);
+// Calling DestroyImmediate will immediately destroy the native  
+// counterpart and trigger Unity's custom null check logic 
+// on the == operator.
+
+if (x is not null) // or !Object.ReferenceEquals(x, null)
+{
+   // true (because for the .NET runtime, x is still alive) 
+ 
+   // If you try to call any Unity API at this point using x, you will 
+   // likely end up with weird exceptions or even crashes
+}
+
+if (x != null)
+{
+   // false  
+ 
+   // We can safely call any Unity APIs here
+}
+```
+
+So we may end up with `x == null` returning true even if the actual C# object reference may not be null.  
+
+# C#'s "is null" Considered Harmful
+**tl;dr:**   
+`x is null` is actually just [syntactic sugar](https://en.wikipedia.org/wiki/Syntactic_sugar) for `Object.ReferenceEquals(x, null)`. In contrast to `x == null`, it does not run any potential custom logic that checks if an object is null or not, which is a common case in scenarios where C# objects wrap native objects. Unity `Object`s are a good example for this.
+
+For inexperienced developers, and especially for Unity developers, using `x is null` can lead to hard-to-debug bugs, such as weird exceptions or even crashes.  I have seen several cases where developers have used `x is null` solely for reasons such as it "appealing more to the eye" or "to be consistent with other `is` pattern match checks".
+
+Because of this, I believe the `x is null` null check added more damage than value to the C# language. If anyone wanted to bypass user-overloaded `==` operators, they could have just used `Object.ReferenceEquals` instead, which, in contrast to `x is null`, clearly states it's purpose.
